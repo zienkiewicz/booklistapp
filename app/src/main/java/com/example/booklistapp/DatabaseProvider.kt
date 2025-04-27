@@ -1,7 +1,7 @@
 package com.example.booklistapp
+
 import android.content.Context
 import androidx.room.Room
-import com.example.booklistapp.AppDatabase
 
 object DatabaseProvider {
     @Volatile
@@ -13,7 +13,9 @@ object DatabaseProvider {
                 context.applicationContext,
                 AppDatabase::class.java,
                 "book_database"
-            ).build()
+            )
+                .fallbackToDestructiveMigration() // allow column add migration
+                .build()
             INSTANCE = instance
             instance
         }

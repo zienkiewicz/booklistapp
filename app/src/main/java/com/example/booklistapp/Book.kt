@@ -10,4 +10,7 @@ data class Book(
     val author: String? = null,
     val description: String? = null,
     val coverUrl: String? = null
-)
+) {
+    // Placeholder for future API-fetch initialization
+    // e.g., init { fetchBookDetailsFromApi(this.id) }
+}
