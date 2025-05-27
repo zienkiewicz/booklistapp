@@ -1,4 +1,3 @@
-// MainActivity.kt
 package com.example.booklistapp
 
 import android.os.Bundle
@@ -9,6 +8,8 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -18,13 +19,13 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
+import coil.compose.AsyncImage
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContent {
-            // Use the built-in MaterialTheme directly
             MaterialTheme {
                 Surface(
                     modifier = Modifier.fillMaxSize(),
@@ -95,17 +96,34 @@ fun BookListScreen(
                     verticalAlignment = Alignment.CenterVertically,
                     modifier = Modifier.fillMaxWidth()
                 ) {
-                    Box(
-                        modifier = Modifier
-                            .size(48.dp)
-                            .background(Color.LightGray)
-                    ) // TODO: load book.coverUrl here
+                    if (book.coverUrl != null) {
+                        AsyncImage(
+                            model = book.coverUrl,
+                            contentDescription = "Book Cover",
+                            modifier = Modifier.size(48.dp)
+                        )
+                    } else {
+                        Box(
+                            modifier = Modifier
+                                .size(48.dp)
+                                .background(Color.LightGray)
+                        )
+                    }
+
                     Spacer(Modifier.width(8.dp))
+
                     Column(modifier = Modifier.weight(1f)) {
                         Text(book.title, style = MaterialTheme.typography.titleMedium)
-                        // TODO: Text(book.description ?: "No description")
+                        Text(book.author ?: "Unknown author", style = MaterialTheme.typography.bodySmall)
+                        Text(book.description ?: "No description", style = MaterialTheme.typography.bodySmall)
                     }
-                    Spacer(Modifier.width(8.dp))
+
+                    IconButton(onClick = { bookViewModel.deleteBook(book.id) }) {
+                        Icon(Icons.Default.Delete, contentDescription = "Delete Book")
+                    }
+
+                    Spacer(Modifier.width(4.dp))
+
                     Button(onClick = {
                         expanded = !expanded
                         selectedBookId = if (expanded) book.id else null
